@@ -20,7 +20,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping(path = "/account")
+@RequestMapping(path = "/api/v1/account")
 public class BankAccountController {
 	@Autowired
 	private BankAccountService bankAccountService;

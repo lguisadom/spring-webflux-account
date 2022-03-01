@@ -6,18 +6,41 @@
 	},
 	"item": [
 		{
-			"name": "getAll",
+			"name": "findAll",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8083/account",
+					"raw": "http://localhost:8083/api/v1/account",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8083",
 					"path": [
+						"api",
+						"v1",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/api/v1/account",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"v1",
 						"account"
 					]
 				}
@@ -31,7 +54,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"accountNumber\": \"123456789\",\r\n    \"cci\": \"0000000000000000\",\r\n    \"amount\": 5000,\r\n    \"customerId\": 1,\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 12.5,\r\n    \"maxLimitMonthlyMovements\": 10,\r\n    \"dayAllowed\": 15\r\n}",
+					"raw": "{\r\n    \"id\": 5,\r\n    \"accountNumber\": \"523456789\",\r\n    \"cci\": \"0000000000000001\",\r\n    \"amount\": 6000,\r\n    \"customerId\": 1,\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 12.5,\r\n    \"maxLimitMonthlyMovements\": 10,\r\n    \"dayAllowed\": 15\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -39,14 +62,91 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8083/account",
+					"raw": "http://localhost:8083/api/v1/account",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8083",
 					"path": [
+						"api",
+						"v1",
 						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByAccountNumber",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/api/v1/account/accountNumber/123456789",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"v1",
+						"account",
+						"accountNumber",
+						"123456789"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"accountNumber\": \"123456789\",\r\n    \"cci\": \"0000000000000000\",\r\n    \"amount\": 1500,\r\n    \"customerId\": 1,\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 12.5,\r\n    \"maxLimitMonthlyMovements\": 10,\r\n    \"dayAllowed\": 15\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/api/v1/account",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"v1",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/api/v1/account/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"v1",
+						"account",
+						"5"
 					]
 				}
 			},
