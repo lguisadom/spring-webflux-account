@@ -5,7 +5,10 @@ import org.springframework.stereotype.Repository;
 
 import com.nttdata.lagm.account.model.BankAccount;
 
+import reactor.core.publisher.Mono;
+
 @Repository
 public interface BankAccountRepository extends ReactiveMongoRepository<BankAccount, Long>{
-
+	Mono<BankAccount> findByAccountNumber(String accountNumber);
+	Mono<Void> deleteByAccountNumber(String accountNumber);
 }

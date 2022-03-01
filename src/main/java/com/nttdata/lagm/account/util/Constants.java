@@ -16,6 +16,8 @@ public class Constants {
 	public static final Integer ID_BANK_ACCOUNT_CURRENT_ACCOUNT = 2;
 	public static final Integer ID_BANK_ACCOUNT_FIXED_TERM = 3;
 	
-	// Types of Credit
-	
+	// Description Bank Account
+	public static final String BANK_ACCOUNT_SAVING = "Cuenta de Ahorro";
+	public static final String BANK_ACCOUNT_CURRENT_ACCOUNT = "Cuenta corriente";
+	public static final String BANK_ACCOUNT_FIXED_TERM = "Plazo Flijo";
 }
