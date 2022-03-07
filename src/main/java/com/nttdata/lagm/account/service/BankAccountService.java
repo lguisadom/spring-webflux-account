@@ -6,7 +6,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface BankAccountService {
-	public void create(BankAccount bankAccount);
+	public Mono<BankAccount> create(BankAccount bankAccount);
 	public Flux<BankAccount> findAll();
 	public Mono<BankAccount> findById(Long id);
 	public Mono<BankAccount> update(BankAccount bankAccount);

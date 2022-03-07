@@ -27,8 +27,8 @@ public class BankAccountController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	private void create(@RequestBody BankAccount bankAccount) {
-		bankAccountService.create(bankAccount);
+	private Mono<BankAccount> create(@RequestBody BankAccount bankAccount) {
+		return bankAccountService.create(bankAccount);
 	}
 	
 	@GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)

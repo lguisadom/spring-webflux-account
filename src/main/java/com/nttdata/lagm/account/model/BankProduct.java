@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public abstract class BankProduct {
-	private Integer id;
+	private Long id;
 	private String accountNumber;
 	private String cci;
 	private String amount;

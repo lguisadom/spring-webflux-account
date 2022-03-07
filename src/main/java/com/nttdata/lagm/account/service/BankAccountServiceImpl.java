@@ -23,11 +23,26 @@ public class BankAccountServiceImpl implements BankAccountService {
 	@Autowired
 	private CustomerProxy customerProxy;
 	
+	private Mono<Void> validateCustomerNotExist(Long id) {
+		return customerProxy.findById(id)
+				.switchIfEmpty(Mono.error(new Exception("There is no customer with id: " + id)))
+				.then();
+
+	}
+	
+	private Mono<Void> assertBankAccountNotExists(Long id) {
+		return bankAccountRepository.findById(id)
+				.flatMap(bankAccount -> {
+					return Mono.error(new Exception("Bank Account with id: " + id + " is already exists"));
+				})
+				.then();
+	}
+	
 	@Override
-	public void create(BankAccount bankAccount) {
-		// Mono<Customer> monoCustomer = customerProxy.findById(bankAccount.getCustomerId());
-		LOGGER.info("Saving BackAccount: " + bankAccount.toString());
-		bankAccountRepository.save(bankAccount).subscribe();
+	public Mono<BankAccount> create(BankAccount bankAccount) {
+		return validateCustomerNotExist(bankAccount.getCustomerId())
+				.mergeWith(assertBankAccountNotExists(bankAccount.getId()))
+				.then(this.bankAccountRepository.save(bankAccount));
 	}
 
 	@Override
@@ -39,7 +54,8 @@ public class BankAccountServiceImpl implements BankAccountService {
 	@Override
 	public Mono<BankAccount> findById(Long id) {
 		LOGGER.info("FindById: " + id);
-		return bankAccountRepository.findById(id);
+		return bankAccountRepository.findById(id)
+				.switchIfEmpty(Mono.error(new Exception("There is no account with id: " + id)));
 	}
 
 	@Override
