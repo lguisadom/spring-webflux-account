@@ -51,6 +51,19 @@ public class BankAccountServiceImpl implements BankAccountService {
 		return Mono.empty();
 	}
 
+	private Mono<Void> checkAccountTypeId(Integer accountTypeId) {
+		if (accountTypeId != Constants.ID_BANK_ACCOUNT_SAVING &&
+			accountTypeId != Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT &&
+			accountTypeId != Constants.ID_BANK_ACCOUNT_FIXED_TERM) {
+			return Mono.error(new Exception("Debe ingresar un tipo de cuenta válido. " +
+				String.format("%d:%s | %d:%s | %d:%s",
+						Constants.ID_BANK_ACCOUNT_SAVING, Util.typeOfAccount(Constants.ID_BANK_ACCOUNT_SAVING),
+						Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT, Util.typeOfAccount(Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT),
+						Constants.ID_BANK_ACCOUNT_FIXED_TERM, Util.typeOfAccount(Constants.ID_BANK_ACCOUNT_FIXED_TERM))));
+		}
+		return Mono.empty();
+	}
+
 	private Mono<Void> checkMaintenanceFee(BankAccount bankAccount) {
 		BigDecimal maintenanceFee = new BigDecimal(bankAccount.getMaintenanceFee());
 		Integer accountTypeId = bankAccount.getTypeId();
@@ -150,6 +163,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 		return checkCustomerExist(bankAccount.getCustomerId())
 				.mergeWith(checkBankAccountNotExists(bankAccount.getId()))
 				.mergeWith(checkMinAmount(bankAccount))
+				.mergeWith(checkAccountTypeId(bankAccount.getTypeId()))
 				.mergeWith(checkBusinessRuleForCustomerAndAccount(bankAccount.getCustomerId(), bankAccount.getTypeId()))
 				.mergeWith(checkMaintenanceFee(bankAccount))
 				.mergeWith(checkMaxLimitMonthlyMovements(bankAccount))
