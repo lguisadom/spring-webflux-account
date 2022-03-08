@@ -15,6 +15,6 @@ import lombok.Setter;
 @Builder
 @Document(collection = "credit")
 public class Credit extends BankProduct {
-	private Double creditLimit;
+	private String creditLimit;
 	
 }
