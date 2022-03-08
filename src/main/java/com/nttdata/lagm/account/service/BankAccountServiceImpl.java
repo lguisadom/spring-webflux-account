@@ -1,6 +1,7 @@
 package com.nttdata.lagm.account.service;
 
-import com.nttdata.lagm.account.util.Util;
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,10 @@ import com.nttdata.lagm.account.model.BankAccount;
 import com.nttdata.lagm.account.proxy.CustomerProxy;
 import com.nttdata.lagm.account.repository.BankAccountRepository;
 import com.nttdata.lagm.account.util.Constants;
+import com.nttdata.lagm.account.util.Util;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.math.BigDecimal;
 
 @Service
 public class BankAccountServiceImpl implements BankAccountService {
@@ -77,7 +77,6 @@ public class BankAccountServiceImpl implements BankAccountService {
 	private Mono<Void> checkMaxLimitMonthlyMovements(BankAccount bankAccount) {
 		Integer maxLimitMonthlyMovements = bankAccount.getMaxLimitMonthlyMovements();
 		Integer accountTypeId = bankAccount.getTypeId();
-		Integer dayAllowed = bankAccount.getDayAllowed();
 
 		if (Constants.ID_BANK_ACCOUNT_SAVING == accountTypeId) {
 			if (maxLimitMonthlyMovements == null || maxLimitMonthlyMovements <= 0) {
