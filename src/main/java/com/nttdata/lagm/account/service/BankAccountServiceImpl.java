@@ -41,6 +41,14 @@ public class BankAccountServiceImpl implements BankAccountService {
 				})
 				.then();
 	}
+	
+	private Mono<Void> checkAccountNumberNotExists(String accountNumber) {
+		return bankAccountRepository.findByAccountNumber(accountNumber)
+				.flatMap(bankAccount -> {
+					return Mono.error(new Exception("Cuenta bancaria con número de cuenta: " + accountNumber + " ya existe"));
+				})
+				.then();
+	}
 
 	private Mono<Void> checkMinAmount(BankAccount bankAccount) {
 		String strAmount = bankAccount.getAmount();
@@ -162,6 +170,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 	public Mono<BankAccount> create(BankAccount bankAccount) {
 		return checkCustomerExist(bankAccount.getCustomerId())
 				.mergeWith(checkBankAccountNotExists(bankAccount.getId()))
+				.mergeWith(checkAccountNumberNotExists(bankAccount.getAccountNumber()))
 				.mergeWith(checkMinAmount(bankAccount))
 				.mergeWith(checkAccountTypeId(bankAccount.getTypeId()))
 				.mergeWith(checkBusinessRuleForCustomerAndAccount(bankAccount.getCustomerId(), bankAccount.getTypeId()))
@@ -225,5 +234,33 @@ public class BankAccountServiceImpl implements BankAccountService {
 	public Flux<BankAccount> findAllByCustomerIdAndAccountId(Long customerId, Integer accountTypeId) {
 		return bankAccountRepository.findAll().filter(
 				bankAccount -> bankAccount.getCustomerId() == customerId && bankAccount.getTypeId() == accountTypeId);
+	}
+
+	@Override
+	public Mono<BankAccount> depositAmount(Long id, String strAmount) {
+		return bankAccountRepository.findById(id)
+				.switchIfEmpty(Mono.error(new Exception("Cuenta bancaria con id: " + id + " no existe")))
+				.flatMap(bankAccount -> {
+					BigDecimal currentAmount = new BigDecimal(bankAccount.getAmount());
+					BigDecimal amount = new BigDecimal(strAmount);
+					BigDecimal finalAmount = currentAmount.add(amount);
+					bankAccount.setAmount(finalAmount.toString());
+					LOGGER.info("Deposita monto: " + currentAmount + " -> " + finalAmount);
+					return bankAccountRepository.save(bankAccount);
+				});
+	}
+	
+	@Override
+	public Mono<BankAccount> withdrawAmount(Long id, String strAmount) {
+		return bankAccountRepository.findById(id)
+				.switchIfEmpty(Mono.error(new Exception("Cuenta bancaria con id: " + id + " no existe")))
+				.flatMap(bankAccount -> {
+					BigDecimal currentAmount = new BigDecimal(bankAccount.getAmount());
+					BigDecimal amount = new BigDecimal(strAmount);
+					BigDecimal finalAmount = currentAmount.subtract(amount);
+					bankAccount.setAmount(finalAmount.toString());
+					LOGGER.info("Retira monto: " + currentAmount + " -> " + finalAmount);
+					return bankAccountRepository.save(bankAccount);
+				});
 	}
 }

@@ -49,6 +49,18 @@ public class BankAccountController {
 		return bankAccountService.update(bankAccount);
 	}
 	
+	@PutMapping("/{id}/deposit/{amount}")
+	@ResponseStatus(HttpStatus.OK)
+	private Mono<BankAccount> depositAmount(@PathVariable Long id, @PathVariable String amount) {
+		return bankAccountService.depositAmount(id, amount);
+	}
+	
+	@PutMapping("/{id}/withdraw/{amount}")
+	@ResponseStatus(HttpStatus.OK)
+	private Mono<BankAccount> withdrawAmount(@PathVariable Long id, @PathVariable String amount) {
+		return bankAccountService.withdrawAmount(id, amount);
+	}
+	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	private Mono<Void> delete(@PathVariable Long id) {

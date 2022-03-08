@@ -15,4 +15,6 @@ public interface BankAccountService {
 	public Mono<BankAccount> updateByAccountNumber(BankAccount bankAccount);
 	public Mono<Void> deleteByAccountNumber(String accountNumber);
 	public Flux<BankAccount> findAllByCustomerIdAndAccountId(Long id, Integer accountTypeId);
+	public Mono<BankAccount> depositAmount(Long id, String amount);
+	public Mono<BankAccount> withdrawAmount(Long id, String amount);
 }

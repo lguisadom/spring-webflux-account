@@ -49,6 +49,29 @@
 			"response": []
 		},
 		{
+			"name": "findByAccountNumber",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/api/v1/account/accountNumber/1111111111",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"v1",
+						"account",
+						"accountNumber",
+						"1111111111"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "create (saving account)",
 			"request": {
 				"method": "POST",
@@ -186,6 +209,72 @@
 						"api",
 						"v1",
 						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "depositAmount",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"accountNumber\": \"123456789\",\r\n    \"cci\": \"0000000000000000\",\r\n    \"amount\": 1600,\r\n    \"customerId\": 1,\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 12.5,\r\n    \"maxLimitMonthlyMovements\": 10,\r\n    \"dayAllowed\": 15\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/api/v1/account/1/deposit/10000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"v1",
+						"account",
+						"1",
+						"deposit",
+						"10000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "withdrawAmount",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"accountNumber\": \"123456789\",\r\n    \"cci\": \"0000000000000000\",\r\n    \"amount\": 1600,\r\n    \"customerId\": 1,\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 12.5,\r\n    \"maxLimitMonthlyMovements\": 10,\r\n    \"dayAllowed\": 15\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/api/v1/account/1/withdraw/6000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"v1",
+						"account",
+						"1",
+						"withdraw",
+						"6000"
 					]
 				}
 			},
