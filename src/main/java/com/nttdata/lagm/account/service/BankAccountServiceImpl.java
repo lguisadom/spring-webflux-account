@@ -180,8 +180,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 	@Override
 	public Mono<BankAccount> findById(Long id) {
 		LOGGER.info("FindById: " + id);
-		return bankAccountRepository.findById(id)
-				.switchIfEmpty(Mono.error(new Exception("There is no account with id: " + id)));
+		return bankAccountRepository.findById(id);
 	}
 
 	@Override
