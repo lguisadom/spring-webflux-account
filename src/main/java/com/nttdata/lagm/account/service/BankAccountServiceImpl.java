@@ -1,5 +1,6 @@
 package com.nttdata.lagm.account.service;
 
+import com.nttdata.lagm.account.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.nttdata.lagm.account.model.BankAccount;
 import com.nttdata.lagm.account.proxy.CustomerProxy;
 import com.nttdata.lagm.account.repository.BankAccountRepository;
+import com.nttdata.lagm.account.util.Constants;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,25 +25,53 @@ public class BankAccountServiceImpl implements BankAccountService {
 	@Autowired
 	private CustomerProxy customerProxy;
 	
-	private Mono<Void> validateCustomerNotExist(Long id) {
+	private Mono<Void> checkCustomerExist(Long id) {
 		return customerProxy.findById(id)
-				.switchIfEmpty(Mono.error(new Exception("There is no customer with id: " + id)))
+				.switchIfEmpty(Mono.error(new Exception("No existe cliente con id: " + id)))
 				.then();
 
 	}
 	
-	private Mono<Void> assertBankAccountNotExists(Long id) {
+	private Mono<Void> checkBankAccountNotExists(Long id) {
 		return bankAccountRepository.findById(id)
 				.flatMap(bankAccount -> {
-					return Mono.error(new Exception("Bank Account with id: " + id + " is already exists"));
+					return Mono.error(new Exception("Cuenta bancaria con id: " + id + " ya existe"));
 				})
 				.then();
+	}
+
+	private Mono<Void> checkBusinessRuleForCustomerAndAccount(Long customerId, Integer accountTypeId) {
+		return this.customerProxy.findById(customerId)
+				.flatMap(customer -> {
+					if (Constants.PERSONAL_CUSTOMER == customer.getCustomerTypeId()) {
+						return this.findAllByCustomerIdAndAccountId(customerId, accountTypeId)
+								.flatMap(result -> {
+									return Mono.error(
+											new Exception("El cliente " + result.getCustomerId() + " es de tipo " +
+													Constants.PERSONAL_CUSTOMER_DESCRIPTION +
+													" y ya tiene registrado una cuenta de tipo " +
+													Util.typeOfAccount(result.getTypeId())));
+								})
+								.then();
+					} else if (Constants.BUSINESS_CUSTOMER == customer.getCustomerTypeId() &&
+							(accountTypeId == Constants.ID_BANK_ACCOUNT_SAVING ||
+							accountTypeId == Constants.ID_BANK_ACCOUNT_FIXED_TERM)) {
+						return Mono.error(
+								new Exception("El cliente " + customerId + " es de tipo " +
+										Constants.BUSINESS_CUSTOMER_DESCRIPTION +
+										" y no puede registrar una cuenta de tipo " +
+										Util.typeOfAccount(accountTypeId)));
+					} else {
+						return Mono.empty();
+					}
+				});
 	}
 	
 	@Override
 	public Mono<BankAccount> create(BankAccount bankAccount) {
-		return validateCustomerNotExist(bankAccount.getCustomerId())
-				.mergeWith(assertBankAccountNotExists(bankAccount.getId()))
+		return checkCustomerExist(bankAccount.getCustomerId())
+				.mergeWith(checkBankAccountNotExists(bankAccount.getId()))
+				.mergeWith(checkBusinessRuleForCustomerAndAccount(bankAccount.getCustomerId(), bankAccount.getTypeId()))
 				.then(this.bankAccountRepository.save(bankAccount));
 	}
 
@@ -94,5 +124,11 @@ public class BankAccountServiceImpl implements BankAccountService {
 	@Override
 	public Mono<Void> deleteByAccountNumber(String accountNumber) {
 		return bankAccountRepository.deleteByAccountNumber(accountNumber);
+	}
+
+	@Override
+	public Flux<BankAccount> findAllByCustomerIdAndAccountId(Long customerId, Integer accountTypeId) {
+		return bankAccountRepository.findAll().filter(
+				bankAccount -> bankAccount.getCustomerId() == customerId && bankAccount.getTypeId() == accountTypeId);
 	}
 }
