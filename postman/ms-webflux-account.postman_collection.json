@@ -48,13 +48,73 @@
 			"response": []
 		},
 		{
-			"name": "create",
+			"name": "create (saving account)",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 5,\r\n    \"accountNumber\": \"523456789\",\r\n    \"cci\": \"0000000000000001\",\r\n    \"amount\": 6000,\r\n    \"customerId\": 1,\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 12.5,\r\n    \"maxLimitMonthlyMovements\": 10,\r\n    \"dayAllowed\": 15\r\n}",
+					"raw": "{\r\n    \"id\": 19,\r\n    \"accountNumber\": \"1234567890\",\r\n    \"cci\": \"0000000000000000\",\r\n    \"amount\": 0,\r\n    \"customerId\": 6,\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 0,\r\n    \"maxLimitMonthlyMovements\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/api/v1/account",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"v1",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create (current account)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 20,\r\n    \"accountNumber\": \"1234567890\",\r\n    \"cci\": \"0000000000000000\",\r\n    \"amount\": 0,\r\n    \"customerId\": 6,\r\n    \"typeId\": 2,\r\n    \"maintenanceFee\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/api/v1/account",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"v1",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create (fixed term account)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 18,\r\n    \"accountNumber\": \"1234567890\",\r\n    \"cci\": \"0000000000000000\",\r\n    \"amount\": 0,\r\n    \"customerId\": 6,\r\n    \"typeId\": 3,\r\n    \"maintenanceFee\": 0,\r\n    \"maxLimitMonthlyMovements\": 1,\r\n    \"dayAllowed\": 31\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -107,7 +167,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1,\r\n    \"accountNumber\": \"123456789\",\r\n    \"cci\": \"0000000000000000\",\r\n    \"amount\": 1500,\r\n    \"customerId\": 1,\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 12.5,\r\n    \"maxLimitMonthlyMovements\": 10,\r\n    \"dayAllowed\": 15\r\n}",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"accountNumber\": \"123456789\",\r\n    \"cci\": \"0000000000000000\",\r\n    \"amount\": 1600,\r\n    \"customerId\": 1,\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 12.5,\r\n    \"maxLimitMonthlyMovements\": 10,\r\n    \"dayAllowed\": 15\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
