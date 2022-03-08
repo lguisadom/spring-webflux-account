@@ -237,7 +237,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 	}
 
 	@Override
-	public Mono<BankAccount> depositAmount(Long id, String strAmount) {
+	public Mono<BankAccount> updateAmount(Long id, String strAmount) {
 		return bankAccountRepository.findById(id)
 				.switchIfEmpty(Mono.error(new Exception("Cuenta bancaria con id: " + id + " no existe")))
 				.flatMap(bankAccount -> {
@@ -245,21 +245,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 					BigDecimal amount = new BigDecimal(strAmount);
 					BigDecimal finalAmount = currentAmount.add(amount);
 					bankAccount.setAmount(finalAmount.toString());
-					LOGGER.info("Deposita monto: " + currentAmount + " -> " + finalAmount);
-					return bankAccountRepository.save(bankAccount);
-				});
-	}
-	
-	@Override
-	public Mono<BankAccount> withdrawAmount(Long id, String strAmount) {
-		return bankAccountRepository.findById(id)
-				.switchIfEmpty(Mono.error(new Exception("Cuenta bancaria con id: " + id + " no existe")))
-				.flatMap(bankAccount -> {
-					BigDecimal currentAmount = new BigDecimal(bankAccount.getAmount());
-					BigDecimal amount = new BigDecimal(strAmount);
-					BigDecimal finalAmount = currentAmount.subtract(amount);
-					bankAccount.setAmount(finalAmount.toString());
-					LOGGER.info("Retira monto: " + currentAmount + " -> " + finalAmount);
+					LOGGER.info("current " + currentAmount + " -> final: " + finalAmount);
 					return bankAccountRepository.save(bankAccount);
 				});
 	}
