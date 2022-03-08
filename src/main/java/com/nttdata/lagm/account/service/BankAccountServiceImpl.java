@@ -14,6 +14,8 @@ import com.nttdata.lagm.account.util.Constants;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
+
 @Service
 public class BankAccountServiceImpl implements BankAccountService {
 	
@@ -38,6 +40,15 @@ public class BankAccountServiceImpl implements BankAccountService {
 					return Mono.error(new Exception("Cuenta bancaria con id: " + id + " ya existe"));
 				})
 				.then();
+	}
+
+	private Mono<Void> checkMinAmount(BankAccount bankAccount) {
+		String strAmount = bankAccount.getAmount();
+		BigDecimal amount = new BigDecimal(strAmount);
+		if (amount.signum() < 0) {
+			return Mono.error(new Exception("Monto mínimo debe ser cero"));
+		}
+		return Mono.empty();
 	}
 
 	private Mono<Void> checkBusinessRuleForCustomerAndAccount(Long customerId, Integer accountTypeId) {
@@ -71,6 +82,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 	public Mono<BankAccount> create(BankAccount bankAccount) {
 		return checkCustomerExist(bankAccount.getCustomerId())
 				.mergeWith(checkBankAccountNotExists(bankAccount.getId()))
+				.mergeWith(checkMinAmount(bankAccount))
 				.mergeWith(checkBusinessRuleForCustomerAndAccount(bankAccount.getCustomerId(), bankAccount.getTypeId()))
 				.then(this.bankAccountRepository.save(bankAccount));
 	}
