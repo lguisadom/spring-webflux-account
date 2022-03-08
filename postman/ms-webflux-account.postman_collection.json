@@ -221,7 +221,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1,\r\n    \"accountNumber\": \"123456789\",\r\n    \"cci\": \"0000000000000000\",\r\n    \"amount\": 1600,\r\n    \"customerId\": 1,\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 12.5,\r\n    \"maxLimitMonthlyMovements\": 10,\r\n    \"dayAllowed\": 15\r\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -229,7 +229,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8083/api/v1/account/1/amount/10000",
+					"raw": "http://localhost:8083/api/v1/account/update/1/amount/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -239,9 +239,10 @@
 						"api",
 						"v1",
 						"account",
+						"update",
 						"1",
 						"amount",
-						"10000"
+						"1"
 					]
 				}
 			},
