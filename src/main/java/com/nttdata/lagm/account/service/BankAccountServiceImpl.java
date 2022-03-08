@@ -74,6 +74,51 @@ public class BankAccountServiceImpl implements BankAccountService {
 		return Mono.empty();
 	}
 
+	private Mono<Void> checkMaxLimitMonthlyMovements(BankAccount bankAccount) {
+		Integer maxLimitMonthlyMovements = bankAccount.getMaxLimitMonthlyMovements();
+		Integer accountTypeId = bankAccount.getTypeId();
+		Integer dayAllowed = bankAccount.getDayAllowed();
+
+		if (Constants.ID_BANK_ACCOUNT_SAVING == accountTypeId) {
+			if (maxLimitMonthlyMovements == null || maxLimitMonthlyMovements <= 0) {
+				return Mono.error(new Exception("El número máximo de movimientos mensuales para la cuenta de tipo " +
+						Util.typeOfAccount(accountTypeId) + " debe ser mayor a 0"));
+			}
+		} else if (Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT == accountTypeId) {
+			if (maxLimitMonthlyMovements != null) {
+				return Mono.error(new Exception("La cuenta de tipo " +
+						Util.typeOfAccount(accountTypeId) + " no debe poseer límite de movimientos mensuales"));
+			}
+		} else if (Constants.ID_BANK_ACCOUNT_FIXED_TERM == accountTypeId) {
+			if (maxLimitMonthlyMovements != 1) {
+				return Mono.error(new Exception("La cuenta de tipo " +
+						Util.typeOfAccount(accountTypeId) + " solo permite un movimiento de retiro o depósito. " +
+						"Debe especificar 1 en máximo límite de movimientos mensuales"));
+			}
+		}
+
+		return Mono.empty();
+	}
+
+	private Mono<Void> checkDayAllowed(BankAccount bankAccount) {
+		Integer accountTypeId = bankAccount.getTypeId();
+		Integer dayAllowed = bankAccount.getDayAllowed();
+
+		if ((Constants.ID_BANK_ACCOUNT_SAVING == accountTypeId ||
+			Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT == accountTypeId) &&
+			dayAllowed != null) {
+			return Mono.error(new Exception("No debe especificar un día permitido para una cuenta de tipo " +
+					Util.typeOfAccount(accountTypeId)));
+		} else if (Constants.ID_BANK_ACCOUNT_FIXED_TERM == accountTypeId) {
+			if (dayAllowed == null || !(dayAllowed >= 0 && dayAllowed <= 31)) {
+				return Mono.error(new Exception("La cuenta de tipo " + Util.typeOfAccount(accountTypeId) +
+						" requiere especificar un día válido específico de movimiento del mes"));
+			}
+		}
+
+		return Mono.empty();
+	}
+
 	private Mono<Void> checkBusinessRuleForCustomerAndAccount(Long customerId, Integer accountTypeId) {
 		return this.customerProxy.findById(customerId)
 				.flatMap(customer -> {
@@ -108,6 +153,8 @@ public class BankAccountServiceImpl implements BankAccountService {
 				.mergeWith(checkMinAmount(bankAccount))
 				.mergeWith(checkBusinessRuleForCustomerAndAccount(bankAccount.getCustomerId(), bankAccount.getTypeId()))
 				.mergeWith(checkMaintenanceFee(bankAccount))
+				.mergeWith(checkMaxLimitMonthlyMovements(bankAccount))
+				.mergeWith(checkDayAllowed(bankAccount))
 				.then(this.bankAccountRepository.save(bankAccount));
 	}
 
