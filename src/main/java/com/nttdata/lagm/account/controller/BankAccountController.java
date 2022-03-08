@@ -1,5 +1,7 @@
 package com.nttdata.lagm.account.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,42 +24,51 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping(path = "/api/v1/account")
 public class BankAccountController {
+
+	private Logger LOGGER = LoggerFactory.getLogger(BankAccountController.class);
+
 	@Autowired
 	private BankAccountService bankAccountService;
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	private Mono<BankAccount> create(@RequestBody BankAccount bankAccount) {
+		LOGGER.info("Create: " + bankAccount);
 		return bankAccountService.create(bankAccount);
 	}
 	
 	@GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	private Flux<BankAccount> findAll() {
+		LOGGER.info("findAll: ");
 		return bankAccountService.findAll();
 	}
 	
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	private Mono<BankAccount> findById(@PathVariable Long id) {
+		LOGGER.info("findById: " + id);
 		return bankAccountService.findById(id);
 	}
 	
 	@PutMapping
 	@ResponseStatus(HttpStatus.OK)
 	private Mono<BankAccount> update(@RequestBody BankAccount bankAccount) {
+		LOGGER.info("Update: " + bankAccount);
 		return bankAccountService.update(bankAccount);
 	}
 	
-	@PutMapping("/{id}/amount/{amount}")
+	@PutMapping("/update/{id}/amount/{amount}")
 	@ResponseStatus(HttpStatus.OK)
 	private Mono<BankAccount> updateAmount(@PathVariable Long id, @PathVariable String amount) {
+		LOGGER.info("UpdateAmount: " + id + ", amount: " + amount);
 		return bankAccountService.updateAmount(id, amount);
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	private Mono<Void> delete(@PathVariable Long id) {
+		LOGGER.info("Delete: " + id);
 		return bankAccountService.delete(id);
 	}
 	
@@ -65,6 +76,7 @@ public class BankAccountController {
 	@GetMapping("accountNumber/{accountNumber}")
 	@ResponseStatus(HttpStatus.OK)
 	private Mono<BankAccount> findByAccountNumber(@PathVariable String accountNumber) {
+		LOGGER.info("FindByAccountNumber: " + accountNumber);
 		return bankAccountService.findByAccountNumber(accountNumber);
 	}
 	
