@@ -51,6 +51,29 @@ public class BankAccountServiceImpl implements BankAccountService {
 		return Mono.empty();
 	}
 
+	private Mono<Void> checkMaintenanceFee(BankAccount bankAccount) {
+		BigDecimal maintenanceFee = new BigDecimal(bankAccount.getMaintenanceFee());
+		Integer accountTypeId = bankAccount.getTypeId();
+
+		if (maintenanceFee.signum() < 0) {
+			return Mono.error(new Exception("Comisión por mantenimiento no puede ser negativo"));
+		} else {
+			if ((accountTypeId == Constants.ID_BANK_ACCOUNT_SAVING ||
+				accountTypeId == Constants.ID_BANK_ACCOUNT_FIXED_TERM) &&
+				maintenanceFee.signum() > 0) {
+				return Mono.error(new Exception("La comisión por mantenimiento para una cuenta de tipo " +
+						Util.typeOfAccount(accountTypeId) + " debe ser 0 (libre de comisión por mantenimiento)"));
+			}
+
+			if (accountTypeId == Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT && maintenanceFee.signum() == 0) {
+				return Mono.error(new Exception("La comisión por mantenimiento para una cuenta de tipo " +
+						Util.typeOfAccount(accountTypeId) + " debe ser mayor a 0 (posee comisión por mantenimiento)"));
+			}
+		}
+
+		return Mono.empty();
+	}
+
 	private Mono<Void> checkBusinessRuleForCustomerAndAccount(Long customerId, Integer accountTypeId) {
 		return this.customerProxy.findById(customerId)
 				.flatMap(customer -> {
@@ -84,6 +107,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 				.mergeWith(checkBankAccountNotExists(bankAccount.getId()))
 				.mergeWith(checkMinAmount(bankAccount))
 				.mergeWith(checkBusinessRuleForCustomerAndAccount(bankAccount.getCustomerId(), bankAccount.getTypeId()))
+				.mergeWith(checkMaintenanceFee(bankAccount))
 				.then(this.bankAccountRepository.save(bankAccount));
 	}
 
