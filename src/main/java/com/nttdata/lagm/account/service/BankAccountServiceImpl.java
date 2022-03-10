@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nttdata.lagm.account.dto.response.AvailableBalanceResponseDto;
 import com.nttdata.lagm.account.model.BankAccount;
 import com.nttdata.lagm.account.proxy.CustomerProxy;
 import com.nttdata.lagm.account.repository.BankAccountRepository;
@@ -47,6 +48,12 @@ public class BankAccountServiceImpl implements BankAccountService {
 				.flatMap(bankAccount -> {
 					return Mono.error(new Exception("Cuenta bancaria con número de cuenta: " + accountNumber + " ya existe"));
 				})
+				.then();
+	}
+	
+	private Mono<Void> checkAccountNumberExists(String accountNumber) {
+		return bankAccountRepository.findByAccountNumber(accountNumber)
+				.switchIfEmpty(Mono.error(new Exception("Cuenta bancaria con númeo de cuenta: " + accountNumber + " no existe")))
 				.then();
 	}
 
@@ -248,5 +255,13 @@ public class BankAccountServiceImpl implements BankAccountService {
 					LOGGER.info("current " + currentAmount + " -> final: " + finalAmount);
 					return bankAccountRepository.save(bankAccount);
 				});
+	}
+
+	@Override
+	public Mono<AvailableBalanceResponseDto> getAvailableBalance(String accountNumber) {
+		return checkAccountNumberExists(accountNumber)
+				.then(bankAccountRepository.findByAccountNumber(accountNumber).map(account -> {
+					return new AvailableBalanceResponseDto(account.getAccountNumber(), account.getAmount());
+				}));
 	}
 }

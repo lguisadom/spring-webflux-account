@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nttdata.lagm.account.dto.response.AvailableBalanceResponseDto;
 import com.nttdata.lagm.account.model.BankAccount;
 import com.nttdata.lagm.account.service.BankAccountService;
 
@@ -80,9 +81,10 @@ public class BankAccountController {
 		return bankAccountService.findByAccountNumber(accountNumber);
 	}
 	
-	/*@PutMapping
+	@GetMapping("/balance/{accountNumber}")
 	@ResponseStatus(HttpStatus.OK)
-	private Mono<BankAccount> updateByAccountNumber(@RequestBody BankAccount bankAccount) {
-		return bankAccountService.updateByAccountNumber(bankAccount);
-	}*/
+	private Mono<AvailableBalanceResponseDto> getAvailableBalance(@PathVariable("accountNumber") String accountNumber) {
+		LOGGER.info("GetAvailableBalance: " + accountNumber);
+		return bankAccountService.getAvailableBalance(accountNumber);
+	}
 }
