@@ -269,6 +269,29 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "availableBalance",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/api/v1/account/balance/1111111111",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"v1",
+						"account",
+						"balance",
+						"1111111111"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

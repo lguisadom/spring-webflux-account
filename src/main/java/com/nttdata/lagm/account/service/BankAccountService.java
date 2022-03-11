@@ -1,6 +1,7 @@
 package com.nttdata.lagm.account.service;
 
 import com.nttdata.lagm.account.dto.response.AvailableBalanceResponseDto;
+import com.nttdata.lagm.account.dto.response.BankAccountDetailResponseDto;
 import com.nttdata.lagm.account.model.BankAccount;
 
 import reactor.core.publisher.Flux;
@@ -18,4 +19,5 @@ public interface BankAccountService {
 	public Flux<BankAccount> findAllByCustomerIdAndAccountId(Long id, Integer accountTypeId);
 	public Mono<BankAccount> updateAmount(Long id, String amount);
 	public Mono<AvailableBalanceResponseDto> getAvailableBalance(String accountNumber);
+//	public Mono<BankAccountDetailResponseDto> getDetailByAccountNumber(String accountNumber);
 }

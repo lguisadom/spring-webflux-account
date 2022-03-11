@@ -53,7 +53,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 	
 	private Mono<Void> checkAccountNumberExists(String accountNumber) {
 		return bankAccountRepository.findByAccountNumber(accountNumber)
-				.switchIfEmpty(Mono.error(new Exception("Cuenta bancaria con númeo de cuenta: " + accountNumber + " no existe")))
+				.switchIfEmpty(Mono.error(new Exception("Cuenta bancaria con número de cuenta: " + accountNumber + " no existe")))
 				.then();
 	}
 
@@ -264,4 +264,16 @@ public class BankAccountServiceImpl implements BankAccountService {
 					return new AvailableBalanceResponseDto(account.getAccountNumber(), account.getAmount());
 				}));
 	}
+
+//	@Override
+//	public Mono<BankAccountDetailResponseDto> getDetailByAccountNumber(String accountNumber) {
+//		return findByAccountNumber(accountNumber)
+//				.map(account -> {
+//					BankAccountDetailResponseDto response = new BankAccountDetailResponseDto();
+//					BankAccountType
+//					response.setId(account.getId());
+//					
+//					return response;
+//				});
+//	}
 }
