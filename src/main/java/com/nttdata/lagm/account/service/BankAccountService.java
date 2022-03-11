@@ -1,7 +1,6 @@
 package com.nttdata.lagm.account.service;
 
 import com.nttdata.lagm.account.dto.response.AvailableBalanceResponseDto;
-import com.nttdata.lagm.account.dto.response.BankAccountDetailResponseDto;
 import com.nttdata.lagm.account.model.BankAccount;
 
 import reactor.core.publisher.Flux;

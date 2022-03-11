@@ -35,14 +35,6 @@ public class BankAccountServiceImpl implements BankAccountService {
 
 	}
 	
-	private Mono<Void> checkBankAccountNotExists(Long id) {
-		return bankAccountRepository.findById(id)
-				.flatMap(bankAccount -> {
-					return Mono.error(new Exception("Cuenta bancaria con id: " + id + " ya existe"));
-				})
-				.then();
-	}
-	
 	private Mono<Void> checkAccountNumberNotExists(String accountNumber) {
 		return bankAccountRepository.findByAccountNumber(accountNumber)
 				.flatMap(bankAccount -> {
@@ -176,7 +168,6 @@ public class BankAccountServiceImpl implements BankAccountService {
 	@Override
 	public Mono<BankAccount> create(BankAccount bankAccount) {
 		return checkCustomerExist(bankAccount.getCustomerId())
-				.mergeWith(checkBankAccountNotExists(bankAccount.getId()))
 				.mergeWith(checkAccountNumberNotExists(bankAccount.getAccountNumber()))
 				.mergeWith(checkMinAmount(bankAccount))
 				.mergeWith(checkAccountTypeId(bankAccount.getTypeId()))
