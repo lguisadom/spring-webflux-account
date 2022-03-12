@@ -8,7 +8,7 @@ import com.nttdata.lagm.account.model.BankAccount;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface BankAccountRepository extends ReactiveMongoRepository<BankAccount, Long>{
+public interface BankAccountRepository extends ReactiveMongoRepository<BankAccount, String>{
 	Mono<BankAccount> findByAccountNumber(String accountNumber);
 	Mono<Void> deleteByAccountNumber(String accountNumber);
 }

@@ -18,4 +18,5 @@ public abstract class BankProduct {
 	// private List<BankingMovement> listBankingMovements;
 	private Long customerId; // beneficiary
 	private String amount;
+	private Boolean status = true;
 }

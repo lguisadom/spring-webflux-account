@@ -185,24 +185,18 @@ public class BankAccountServiceImpl implements BankAccountService {
 	}
 	
 	@Override
-	public Mono<BankAccount> findById(Long id) {
+	public Mono<BankAccount> findById(String id) {
 		LOGGER.info("FindById: " + id);
 		return bankAccountRepository.findById(id);
 	}
-
-	@Override
-	public Mono<BankAccount> update(BankAccount bankAccount) {
-		LOGGER.info("Updating BackAccount: " + bankAccount.toString());
-		//bankAccountRepository.findByAccountNumber(bankAccount.getAccountNumber();
-		// si encuentra -> save
-		// sino -> lanzar error
-		return bankAccountRepository.save(bankAccount);
-	}
 	
 	@Override
-	public Mono<Void> delete(Long id) {
+	public Mono<BankAccount> delete(String id) {
 		LOGGER.info("Deleting BackAccount id: " + id);
-		return bankAccountRepository.deleteById(id);
+		return bankAccountRepository.findById(id).flatMap(bankAccount -> {
+			bankAccount.setStatus(false);
+			return bankAccountRepository.save(bankAccount);
+		});
 	}
 	
 	// Account Number
@@ -235,7 +229,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 	}
 
 	@Override
-	public Mono<BankAccount> updateAmount(Long id, String strAmount) {
+	public Mono<BankAccount> updateAmount(String id, String strAmount) {
 		return bankAccountRepository.findById(id)
 				.switchIfEmpty(Mono.error(new Exception("Cuenta bancaria con id: " + id + " no existe")))
 				.flatMap(bankAccount -> {

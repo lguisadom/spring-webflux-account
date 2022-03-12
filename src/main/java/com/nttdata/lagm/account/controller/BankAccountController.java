@@ -47,28 +47,21 @@ public class BankAccountController {
 	
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	private Mono<BankAccount> findById(@PathVariable Long id) {
+	private Mono<BankAccount> findById(@PathVariable String id) {
 		LOGGER.info("findById: " + id);
 		return bankAccountService.findById(id);
 	}
 	
-	@PutMapping
-	@ResponseStatus(HttpStatus.OK)
-	private Mono<BankAccount> update(@RequestBody BankAccount bankAccount) {
-		LOGGER.info("Update: " + bankAccount);
-		return bankAccountService.update(bankAccount);
-	}
-	
 	@PutMapping("/update/{id}/amount/{amount}")
 	@ResponseStatus(HttpStatus.OK)
-	private Mono<BankAccount> updateAmount(@PathVariable Long id, @PathVariable String amount) {
+	private Mono<BankAccount> updateAmount(@PathVariable String id, @PathVariable String amount) {
 		LOGGER.info("UpdateAmount: " + id + ", amount: " + amount);
 		return bankAccountService.updateAmount(id, amount);
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	private Mono<Void> delete(@PathVariable Long id) {
+	private Mono<BankAccount> delete(@PathVariable String id) {
 		LOGGER.info("Delete: " + id);
 		return bankAccountService.delete(id);
 	}
