@@ -28,7 +28,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 	@Autowired
 	private CustomerProxy customerProxy;
 	
-	private Mono<Void> checkCustomerExist(Long id) {
+	private Mono<Void> checkCustomerExist(String id) {
 		return customerProxy.findById(id)
 				.switchIfEmpty(Mono.error(new Exception("No existe cliente con id: " + id)))
 				.then();
@@ -138,7 +138,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 		return Mono.empty();
 	}
 
-	private Mono<Void> checkBusinessRuleForCustomerAndAccount(Long customerId, Integer accountTypeId) {
+	private Mono<Void> checkBusinessRuleForCustomerAndAccount(String customerId, Integer accountTypeId) {
 		return this.customerProxy.findById(customerId)
 				.flatMap(customer -> {
 					if (Constants.PERSONAL_CUSTOMER == customer.getCustomerTypeId()) {
@@ -223,9 +223,9 @@ public class BankAccountServiceImpl implements BankAccountService {
 	}
 
 	@Override
-	public Flux<BankAccount> findAllByCustomerIdAndAccountId(Long customerId, Integer accountTypeId) {
+	public Flux<BankAccount> findAllByCustomerIdAndAccountId(String customerId, Integer accountTypeId) {
 		return bankAccountRepository.findAll().filter(
-				bankAccount -> bankAccount.getCustomerId() == customerId && bankAccount.getTypeId() == accountTypeId);
+				bankAccount -> bankAccount.getCustomerId().equals(customerId) && bankAccount.getTypeId() == accountTypeId);
 	}
 
 	@Override

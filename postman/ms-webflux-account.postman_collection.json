@@ -32,7 +32,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8083/api/v1/account/622c1de9a2b7cc27779fff49",
+					"raw": "http://localhost:8083/api/v1/account/622e8e1e94908509a266cfe4",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -42,7 +42,7 @@
 						"api",
 						"v1",
 						"account",
-						"622c1de9a2b7cc27779fff49"
+						"622e8e1e94908509a266cfe4"
 					]
 				}
 			},
@@ -78,7 +78,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"accountNumber\": \"19135813408051\",\r\n    \"cci\": \"00219113581340805850\",\r\n    \"amount\": 1,\r\n    \"customerId\": 1,\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 0,\r\n    \"maxLimitMonthlyMovements\": 1\r\n}",
+					"raw": "{\r\n    \"accountNumber\": \"19135813408051\",\r\n    \"cci\": \"00219113581340805850\",\r\n    \"amount\": 1,\r\n    \"customerId\": \"622c3f9db83e31010a15c83a\",\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 0,\r\n    \"maxLimitMonthlyMovements\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -108,7 +108,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"accountNumber\": \"19135813408052\",\r\n    \"cci\": \"00219113581340805851\",\r\n    \"amount\": 0,\r\n    \"customerId\": 1,\r\n    \"typeId\": 2,\r\n    \"maintenanceFee\": 1\r\n}",
+					"raw": "{\r\n    \"accountNumber\": \"19135813408052\",\r\n    \"cci\": \"00219113581340805851\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"622c3f9db83e31010a15c83a\",\r\n    \"typeId\": 2,\r\n    \"maintenanceFee\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -138,7 +138,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"accountNumber\": \"19135813408053\",\r\n    \"cci\": \"00219113581340805852\",\r\n    \"amount\": 0,\r\n    \"customerId\": 1,\r\n    \"typeId\": 3,\r\n    \"maintenanceFee\": 0,\r\n    \"maxLimitMonthlyMovements\": 1,\r\n    \"dayAllowed\": 31\r\n}",
+					"raw": "{\r\n    \"accountNumber\": \"19135813408053\",\r\n    \"cci\": \"00219113581340805852\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"622c3f9db83e31010a15c83a\",\r\n    \"typeId\": 3,\r\n    \"maintenanceFee\": 0,\r\n    \"maxLimitMonthlyMovements\": 1,\r\n    \"dayAllowed\": 31\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

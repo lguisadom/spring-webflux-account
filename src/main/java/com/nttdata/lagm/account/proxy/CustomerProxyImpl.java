@@ -37,7 +37,7 @@ public class CustomerProxyImpl implements CustomerProxy {
 	}
 	
 	@Override
-	public Mono<Customer> findById(Long id) {
+	public Mono<Customer> findById(String id) {
 		Map<String,Object> params = new HashMap<>();
 		params.put("id", id);
 		

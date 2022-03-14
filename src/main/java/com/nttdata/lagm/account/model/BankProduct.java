@@ -16,7 +16,7 @@ public abstract class BankProduct {
 	private String accountNumber;
 	private String cci;
 	// private List<BankingMovement> listBankingMovements;
-	private Long customerId; // beneficiary
+	private String customerId; // beneficiary
 	private String amount;
 	private Boolean status = true;
 }
