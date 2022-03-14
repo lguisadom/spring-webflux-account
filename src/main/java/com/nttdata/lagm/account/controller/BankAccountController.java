@@ -1,5 +1,6 @@
 package com.nttdata.lagm.account.controller;
 
+import com.nttdata.lagm.account.dto.request.BankAccountRequestDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +34,9 @@ public class BankAccountController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	private Mono<BankAccount> create(@RequestBody BankAccount bankAccount) {
-		LOGGER.info("Create: " + bankAccount);
-		return bankAccountService.create(bankAccount);
+	private Mono<BankAccount> create(@RequestBody BankAccountRequestDto bankAccountRequestDto) {
+		LOGGER.info("Create: " + bankAccountRequestDto);
+		return bankAccountService.create(bankAccountRequestDto);
 	}
 	
 	@GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)

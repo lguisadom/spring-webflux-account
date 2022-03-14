@@ -1,20 +1,15 @@
 package com.nttdata.lagm.account.model;
 
+import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Builder
-@Document(collection = "credit")
+@ToString
 public class Credit extends BankProduct {
 	private String creditLimit;
-	
+
 }
