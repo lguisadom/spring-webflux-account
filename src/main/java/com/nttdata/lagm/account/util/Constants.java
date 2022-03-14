@@ -26,6 +26,10 @@ public class Constants {
 	public static final String BUSINESS_CUSTOMER_DESCRIPTION = "Empresarial";
 	
 	// Types of Customer
-	public static final Integer PERSONAL_CUSTOMER = 1;
-	public static final Integer BUSINESS_CUSTOMER = 2;
+	public static final Integer CUSTOMER_TYPE_PERSONAL = 1;
+	public static final Integer CUSTOMER_TYPE_BUSINESS = 2;
+
+	public static final Integer CUSTOMER_PROFILE_REGULAR = 1;
+	public static final Integer CUSTOMER_PROFILE_VIP = 2;
+	public static final Integer CUSTOMER_PROFILE_PYME = 3;
 }

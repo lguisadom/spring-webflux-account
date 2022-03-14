@@ -74,24 +74,35 @@ public class BankAccountServiceImpl implements BankAccountService {
 	private Mono<Void> checkMaintenanceFee(BankAccount bankAccount) {
 		BigDecimal maintenanceFee = new BigDecimal(bankAccount.getMaintenanceFee());
 		Integer accountTypeId = bankAccount.getTypeId();
+		return customerProxy.findById(bankAccount.getCustomerId())
+				.flatMap(customer -> {
+					if (maintenanceFee.signum() < 0) {
+						return Mono.error(new Exception("Comisión por mantenimiento no puede ser negativo"));
+					} else {
+						if ((accountTypeId == Constants.ID_BANK_ACCOUNT_SAVING ||
+								accountTypeId == Constants.ID_BANK_ACCOUNT_FIXED_TERM) &&
+								maintenanceFee.signum() > 0) {
+							return Mono.error(new Exception("La comisión por mantenimiento para una cuenta de tipo " +
+									Util.typeOfAccount(accountTypeId) + " debe ser 0 (libre de comisión por mantenimiento)"));
+						}
 
-		if (maintenanceFee.signum() < 0) {
-			return Mono.error(new Exception("Comisión por mantenimiento no puede ser negativo"));
-		} else {
-			if ((accountTypeId == Constants.ID_BANK_ACCOUNT_SAVING ||
-				accountTypeId == Constants.ID_BANK_ACCOUNT_FIXED_TERM) &&
-				maintenanceFee.signum() > 0) {
-				return Mono.error(new Exception("La comisión por mantenimiento para una cuenta de tipo " +
-						Util.typeOfAccount(accountTypeId) + " debe ser 0 (libre de comisión por mantenimiento)"));
-			}
+						if (accountTypeId == Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT) {
+							Integer customerProfileId = customer.getCustomerProfileId();
 
-			if (accountTypeId == Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT && maintenanceFee.signum() == 0) {
-				return Mono.error(new Exception("La comisión por mantenimiento para una cuenta de tipo " +
-						Util.typeOfAccount(accountTypeId) + " debe ser mayor a 0 (posee comisión por mantenimiento)"));
-			}
-		}
+							if (customerProfileId == Constants.CUSTOMER_PROFILE_REGULAR && maintenanceFee.signum() == 0) {
+								return Mono.error(new Exception("La comisión por mantenimiento para una cuenta de tipo " +
+										Util.typeOfAccount(accountTypeId) + " debe ser mayor a 0 (posee comisión por mantenimiento)"));
+							}
 
-		return Mono.empty();
+							if (customerProfileId == Constants.CUSTOMER_PROFILE_PYME && maintenanceFee.signum() > 0) {
+								return Mono.error(new Exception("La comisión por mantenimiento para una cuenta de tipo " +
+										Util.typeOfAccount(accountTypeId) + " para un cliente empresarial PYME debe ser 0"));
+							}
+						}
+					}
+
+					return Mono.empty();
+				});
 	}
 
 	private Mono<Void> checkMaxLimitMonthlyMovements(BankAccount bankAccount) {
@@ -141,7 +152,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 	private Mono<Void> checkBusinessRuleForCustomerAndAccount(String customerId, Integer accountTypeId) {
 		return this.customerProxy.findById(customerId)
 				.flatMap(customer -> {
-					if (Constants.PERSONAL_CUSTOMER == customer.getCustomerTypeId()) {
+					if (Constants.CUSTOMER_TYPE_PERSONAL == customer.getCustomerTypeId()) {
 						return this.findAllByCustomerIdAndAccountId(customerId, accountTypeId)
 								.flatMap(result -> {
 									return Mono.error(
@@ -151,7 +162,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 													Util.typeOfAccount(result.getTypeId())));
 								})
 								.then();
-					} else if (Constants.BUSINESS_CUSTOMER == customer.getCustomerTypeId() &&
+					} else if (Constants.CUSTOMER_TYPE_BUSINESS == customer.getCustomerTypeId() &&
 							(accountTypeId == Constants.ID_BANK_ACCOUNT_SAVING ||
 							accountTypeId == Constants.ID_BANK_ACCOUNT_FIXED_TERM)) {
 						return Mono.error(

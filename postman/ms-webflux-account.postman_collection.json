@@ -32,7 +32,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8083/api/v1/account/622e8e1e94908509a266cfe4",
+					"raw": "http://localhost:8083/api/v1/account/622f89331ffd8725110f2fe7",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -42,7 +42,7 @@
 						"api",
 						"v1",
 						"account",
-						"622e8e1e94908509a266cfe4"
+						"622f89331ffd8725110f2fe7"
 					]
 				}
 			},
@@ -78,7 +78,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"accountNumber\": \"19135813408051\",\r\n    \"cci\": \"00219113581340805850\",\r\n    \"amount\": 1,\r\n    \"customerId\": \"622c3f9db83e31010a15c83a\",\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 0,\r\n    \"maxLimitMonthlyMovements\": 1\r\n}",
+					"raw": "{\r\n    \"accountNumber\": \"19135813408056\",\r\n    \"cci\": \"00219113581340805850\",\r\n    \"amount\": 1,\r\n    \"customerId\": \"622f77092b62d409ddc1793e\",\r\n    \"typeId\": 1,\r\n    \"maintenanceFee\": 0,\r\n    \"maxLimitMonthlyMovements\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -108,7 +108,37 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"accountNumber\": \"19135813408052\",\r\n    \"cci\": \"00219113581340805851\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"622c3f9db83e31010a15c83a\",\r\n    \"typeId\": 2,\r\n    \"maintenanceFee\": 1\r\n}",
+					"raw": "{\r\n    \"accountNumber\": \"19135813408062\",\r\n    \"cci\": \"00219113581340805851\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"622f772c2b62d409ddc1793f\",\r\n    \"typeId\": 2,\r\n    \"maintenanceFee\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/api/v1/account",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"v1",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create (current account - PYME)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountNumber\": \"19135813408075\",\r\n    \"cci\": \"00219113581340805851\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"622fa48258c54527b454f63f\",\r\n    \"typeId\": 2,\r\n    \"maintenanceFee\": 0\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -138,7 +168,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"accountNumber\": \"19135813408053\",\r\n    \"cci\": \"00219113581340805852\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"622c3f9db83e31010a15c83a\",\r\n    \"typeId\": 3,\r\n    \"maintenanceFee\": 0,\r\n    \"maxLimitMonthlyMovements\": 1,\r\n    \"dayAllowed\": 31\r\n}",
+					"raw": "{\r\n    \"accountNumber\": \"19135813408063\",\r\n    \"cci\": \"00219113581340805852\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"622c3f9db83e31010a15c83a\",\r\n    \"typeId\": 3,\r\n    \"maintenanceFee\": 0,\r\n    \"maxLimitMonthlyMovements\": 1,\r\n    \"dayAllowed\": 31\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
