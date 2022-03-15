@@ -41,7 +41,6 @@ public class BankAccountServiceImpl implements BankAccountService {
 	@Override
 	public Mono<BankAccount> create(BankAccountRequestDto bankAccountRequestDto) {
 		BankAccount bankAccount = Converter.converToToBankAccount(bankAccountRequestDto);
-		System.out.println("bankAccount: " + bankAccount);
 		return checkConditions(bankAccount)
 			.then(this.bankAccountRepository.save(bankAccount));
 	}
@@ -210,7 +209,6 @@ public class BankAccountServiceImpl implements BankAccountService {
 	}
 
 	private Mono<Void> checkMaxLimitMonthlyMovements(BankAccount bankAccount) {
-		System.out.println("checkMaxLimitMonthlyMovements bankAccount: " + bankAccount);
 		Integer maxLimitMonthlyMovements = bankAccount.getMaxLimitMonthlyMovements();
 		Integer accountTypeId = bankAccount.getBankAccountType().getId();
 
