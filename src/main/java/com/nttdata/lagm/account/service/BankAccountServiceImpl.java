@@ -14,6 +14,7 @@ import com.nttdata.lagm.account.dto.response.AvailableBalanceResponseDto;
 import com.nttdata.lagm.account.model.BankAccount;
 import com.nttdata.lagm.account.proxy.CustomerProxy;
 import com.nttdata.lagm.account.repository.BankAccountRepository;
+import com.nttdata.lagm.account.repository.BankAccountTypeRepository;
 import com.nttdata.lagm.account.util.Constants;
 import com.nttdata.lagm.account.util.Util;
 
@@ -29,6 +30,9 @@ public class BankAccountServiceImpl implements BankAccountService {
 	private BankAccountRepository bankAccountRepository;
 	
 	@Autowired
+	private BankAccountTypeRepository bankAccountTypeRepository;
+	
+	@Autowired
 	private CustomerProxy customerProxy;
 
 	@Autowired
@@ -39,7 +43,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 		BankAccount bankAccount = Converter.converToToBankAccount(bankAccountRequestDto);
 		System.out.println("bankAccount: " + bankAccount);
 		return checkConditions(bankAccount)
-				.then(this.bankAccountRepository.save(bankAccount));
+			.then(this.bankAccountRepository.save(bankAccount));
 	}
 
 	@Override
@@ -72,12 +76,12 @@ public class BankAccountServiceImpl implements BankAccountService {
 	@Override
 	public Mono<BankAccount> updateByAccountNumber(BankAccount bankAccount) {
 		return bankAccountRepository.findByAccountNumber(bankAccount.getAccountNumber())
-				.switchIfEmpty(Mono.error(new Exception("Bank Account not found")))
-				.map(b -> {
-					b.setAmount(bankAccount.getAmount());
-					return b;
-				})
-				.flatMap(bankAccountRepository::save);
+			.switchIfEmpty(Mono.error(new Exception("Bank Account not found")))
+			.map(b -> {
+				b.setAmount(bankAccount.getAmount());
+				return b;
+			})
+			.flatMap(bankAccountRepository::save);
 				
 	}
 	
@@ -89,67 +93,67 @@ public class BankAccountServiceImpl implements BankAccountService {
 	@Override
 	public Flux<BankAccount> findAllByCustomerIdAndAccountId(String customerId, Integer accountTypeId) {
 		return bankAccountRepository.findAll().filter(
-				bankAccount -> bankAccount.getCustomer().getId().equals(customerId) && bankAccount.getTypeId() == accountTypeId);
+			bankAccount -> bankAccount.getCustomer().getId().equals(customerId) && bankAccount.getBankAccountType().getId() == accountTypeId);
 	}
 
 	@Override
 	public Mono<BankAccount> updateAmount(String id, String strAmount) {
 		return bankAccountRepository.findById(id)
-				.switchIfEmpty(Mono.error(new Exception("Cuenta bancaria con id: " + id + " no existe")))
-				.flatMap(bankAccount -> {
-					BigDecimal currentAmount = new BigDecimal(bankAccount.getAmount());
-					BigDecimal amount = new BigDecimal(strAmount);
-					BigDecimal finalAmount = currentAmount.add(amount);
-					bankAccount.setAmount(finalAmount.toString());
-					LOGGER.info("current " + currentAmount + " -> final: " + finalAmount);
-					return bankAccountRepository.save(bankAccount);
-				});
+			.switchIfEmpty(Mono.error(new Exception("Cuenta bancaria con id: " + id + " no existe")))
+			.flatMap(bankAccount -> {
+				BigDecimal currentAmount = new BigDecimal(bankAccount.getAmount());
+				BigDecimal amount = new BigDecimal(strAmount);
+				BigDecimal finalAmount = currentAmount.add(amount);
+				bankAccount.setAmount(finalAmount.toString());
+				LOGGER.info("current " + currentAmount + " -> final: " + finalAmount);
+				return bankAccountRepository.save(bankAccount);
+			});
 	}
 
 	@Override
 	public Mono<AvailableBalanceResponseDto> getAvailableBalance(String accountNumber) {
 		return checkAccountNumberExists(accountNumber)
-				.then(bankAccountRepository.findByAccountNumber(accountNumber).map(account -> {
-					return new AvailableBalanceResponseDto(account.getAccountNumber(), account.getAmount());
-				}));
+			.then(bankAccountRepository.findByAccountNumber(accountNumber).map(account -> {
+				return new AvailableBalanceResponseDto(account.getAccountNumber(), account.getAmount());
+			}));
 	}
 
 	private Mono<Void> checkConditions(BankAccount bankAccount) {
 		return checkCustomerExist(bankAccount)
-				.mergeWith(checkAccountNumberNotExists(bankAccount.getAccountNumber()))
-				.mergeWith(checkMinAmount(bankAccount))
-				.mergeWith(checkAccountTypeId(bankAccount.getTypeId()))
-				.mergeWith(checkBusinessRuleForCustomerAndAccount(bankAccount.getCustomer().getId(), bankAccount.getTypeId()))
-				.mergeWith(checkMaintenanceFee(bankAccount))
-				.mergeWith(checkMaxLimitMonthlyMovements(bankAccount))
-				.mergeWith(checkDayAllowed(bankAccount))
-				.mergeWith(checkIfCreditCardIsRequired(bankAccount))
-				.then();
+			.mergeWith(checkAccountNumberNotExists(bankAccount.getAccountNumber()))
+			.mergeWith(checkMinAmount(bankAccount))
+			.mergeWith(checkAccountTypeExist(bankAccount))
+			.mergeWith(checkBusinessRuleForCustomerAndAccount(bankAccount.getCustomer().getId(), bankAccount.getBankAccountType().getId()))
+			.mergeWith(checkMaintenanceFee(bankAccount))
+			.mergeWith(checkMaxLimitMonthlyMovements(bankAccount))
+			.mergeWith(checkDayAllowed(bankAccount))
+			.mergeWith(checkIfCreditCardIsRequired(bankAccount))
+			.then();
 	}
 
 	private Mono<Void> checkCustomerExist(BankAccount bankAccount) {
 		String customerId = bankAccount.getCustomer().getId();
 		return customerProxy.findById(customerId)
-				.switchIfEmpty(Mono.error(new Exception("No existe cliente con id: " + customerId)))
-				.flatMap(customer -> {
-					bankAccount.setCustomer(customer);
-					return Mono.empty();
-				});
+			.switchIfEmpty(Mono.error(new Exception("No existe cliente con id: " + customerId)))
+			.flatMap(customer -> {
+				bankAccount.setCustomer(customer);
+				return Mono.empty();
+			});
 
 	}
 
 	private Mono<Void> checkAccountNumberNotExists(String accountNumber) {
 		return bankAccountRepository.findByAccountNumber(accountNumber)
-				.flatMap(bankAccount -> {
-					return Mono.error(new Exception("Cuenta bancaria con número de cuenta: " + accountNumber + " ya existe"));
-				})
-				.then();
+			.flatMap(bankAccount -> {
+				return Mono.error(new Exception("Cuenta bancaria con número de cuenta: " + accountNumber + " ya existe"));
+			})
+			.then();
 	}
 
 	private Mono<Void> checkAccountNumberExists(String accountNumber) {
 		return bankAccountRepository.findByAccountNumber(accountNumber)
-				.switchIfEmpty(Mono.error(new Exception("Cuenta bancaria con número de cuenta: " + accountNumber + " no existe")))
-				.then();
+			.switchIfEmpty(Mono.error(new Exception("Cuenta bancaria con número de cuenta: " + accountNumber + " no existe")))
+			.then();
 	}
 
 	private Mono<Void> checkMinAmount(BankAccount bankAccount) {
@@ -161,72 +165,69 @@ public class BankAccountServiceImpl implements BankAccountService {
 		return Mono.empty();
 	}
 
-	private Mono<Void> checkAccountTypeId(Integer accountTypeId) {
-		if (accountTypeId != Constants.ID_BANK_ACCOUNT_SAVING &&
-				accountTypeId != Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT &&
-				accountTypeId != Constants.ID_BANK_ACCOUNT_FIXED_TERM) {
-			return Mono.error(new Exception("Debe ingresar un tipo de cuenta válido. " +
-					String.format("%d:%s | %d:%s | %d:%s",
-							Constants.ID_BANK_ACCOUNT_SAVING, Util.typeOfAccount(Constants.ID_BANK_ACCOUNT_SAVING),
-							Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT, Util.typeOfAccount(Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT),
-							Constants.ID_BANK_ACCOUNT_FIXED_TERM, Util.typeOfAccount(Constants.ID_BANK_ACCOUNT_FIXED_TERM))));
-		}
-		return Mono.empty();
+	private Mono<Void> checkAccountTypeExist(BankAccount bankAccount) {
+		Integer bankAccountTypeId = bankAccount.getBankAccountType().getId();
+		return bankAccountTypeRepository.findById(bankAccountTypeId)
+			.switchIfEmpty(Mono.error(new Exception("No existe tipo de cuenta con id: " + bankAccountTypeId)))
+			.flatMap(bankAccountType -> {
+				bankAccount.setBankAccountType(bankAccountType);
+				return Mono.empty();
+			});
 	}
 
 	private Mono<Void> checkMaintenanceFee(BankAccount bankAccount) {
 		BigDecimal maintenanceFee = new BigDecimal(bankAccount.getMaintenanceFee());
-		Integer accountTypeId = bankAccount.getTypeId();
+		Integer accountTypeId = bankAccount.getBankAccountType().getId();
 		return customerProxy.findById(bankAccount.getCustomer().getId())
-				.flatMap(customer -> {
-					if (maintenanceFee.signum() < 0) {
-						return Mono.error(new Exception("Comisión por mantenimiento no puede ser negativo"));
-					} else {
-						if ((accountTypeId == Constants.ID_BANK_ACCOUNT_SAVING ||
-								accountTypeId == Constants.ID_BANK_ACCOUNT_FIXED_TERM) &&
-								maintenanceFee.signum() > 0) {
+			.flatMap(customer -> {
+				if (maintenanceFee.signum() < 0) {
+					return Mono.error(new Exception("Comisión por mantenimiento no puede ser negativo"));
+				} else {
+					if ((accountTypeId == Constants.ID_BANK_ACCOUNT_SAVING ||
+						accountTypeId == Constants.ID_BANK_ACCOUNT_FIXED_TERM) &&
+						maintenanceFee.signum() > 0) {
 							return Mono.error(new Exception("La comisión por mantenimiento para una cuenta de tipo " +
-									Util.typeOfAccount(accountTypeId) + " debe ser 0 (libre de comisión por mantenimiento)"));
-						}
-
-						if (accountTypeId == Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT) {
-							Integer customerProfileId = customer.getCustomerProfileId();
-
-							if (customerProfileId == Constants.CUSTOMER_PROFILE_REGULAR && maintenanceFee.signum() == 0) {
-								return Mono.error(new Exception("La comisión por mantenimiento para una cuenta de tipo " +
-										Util.typeOfAccount(accountTypeId) + " debe ser mayor a 0 (posee comisión por mantenimiento)"));
-							}
-
-							if (customerProfileId == Constants.CUSTOMER_PROFILE_PYME && maintenanceFee.signum() > 0) {
-								return Mono.error(new Exception("La comisión por mantenimiento para una cuenta de tipo " +
-										Util.typeOfAccount(accountTypeId) + " para un cliente empresarial PYME debe ser 0"));
-							}
-						}
+								Util.typeOfAccount(accountTypeId) + " debe ser 0 (libre de comisión por mantenimiento)"));
 					}
 
-					return Mono.empty();
-				});
+					if (accountTypeId == Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT) {
+						Integer customerProfileId = customer.getCustomerProfileId();
+
+						if (customerProfileId == Constants.CUSTOMER_PROFILE_REGULAR && maintenanceFee.signum() == 0) {
+							return Mono.error(new Exception("La comisión por mantenimiento para una cuenta de tipo " +
+								Util.typeOfAccount(accountTypeId) + " debe ser mayor a 0 (posee comisión por mantenimiento)"));
+						}
+
+						if (customerProfileId == Constants.CUSTOMER_PROFILE_PYME && maintenanceFee.signum() > 0) {
+							return Mono.error(new Exception("La comisión por mantenimiento para una cuenta de tipo " +
+								Util.typeOfAccount(accountTypeId) + " para un cliente empresarial PYME debe ser 0"));
+						}
+					}
+				}
+
+				return Mono.empty();
+			});
 	}
 
 	private Mono<Void> checkMaxLimitMonthlyMovements(BankAccount bankAccount) {
 		System.out.println("checkMaxLimitMonthlyMovements bankAccount: " + bankAccount);
 		Integer maxLimitMonthlyMovements = bankAccount.getMaxLimitMonthlyMovements();
-		Integer accountTypeId = bankAccount.getTypeId();
+		Integer accountTypeId = bankAccount.getBankAccountType().getId();
 
 		if (Constants.ID_BANK_ACCOUNT_SAVING == accountTypeId) {
 			if (maxLimitMonthlyMovements == null || maxLimitMonthlyMovements <= 0) {
 				return Mono.error(new Exception("El número máximo de movimientos mensuales para la cuenta de tipo " +
-						Util.typeOfAccount(accountTypeId) + " debe ser mayor a 0"));
+					Util.typeOfAccount(accountTypeId) + " debe ser mayor a 0"));
 			}
 		} else if (Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT == accountTypeId) {
 			if (maxLimitMonthlyMovements != null) {
 				return Mono.error(new Exception("La cuenta de tipo " +
-						Util.typeOfAccount(accountTypeId) + " no debe poseer límite de movimientos mensuales"));
+					Util.typeOfAccount(accountTypeId) + " no debe poseer límite de movimientos mensuales"));
 			}
 		} else if (Constants.ID_BANK_ACCOUNT_FIXED_TERM == accountTypeId) {
 			if (maxLimitMonthlyMovements != 1) {
 				return Mono.error(new Exception("La cuenta de tipo " +
-						Util.typeOfAccount(accountTypeId) + " solo permite un movimiento de retiro o depósito. " +
+					Util.typeOfAccount(accountTypeId) + " solo permite un movimiento de retiro o depósito. " +
 						"Debe especificar 1 en máximo límite de movimientos mensuales"));
 			}
 		}
@@ -235,13 +236,13 @@ public class BankAccountServiceImpl implements BankAccountService {
 	}
 
 	private Mono<Void> checkDayAllowed(BankAccount bankAccount) {
-		Integer accountTypeId = bankAccount.getTypeId();
+		Integer accountTypeId = bankAccount.getBankAccountType().getId();
 		Integer dayAllowed = bankAccount.getDayAllowed();
 
 		if ((Constants.ID_BANK_ACCOUNT_SAVING == accountTypeId ||
-				Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT == accountTypeId) &&
+			Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT == accountTypeId) &&
 				dayAllowed != null) {
-			return Mono.error(new Exception("No debe especificar un día permitido para una cuenta de tipo " +
+				return Mono.error(new Exception("No debe especificar un día permitido para una cuenta de tipo " +
 					Util.typeOfAccount(accountTypeId)));
 		} else if (Constants.ID_BANK_ACCOUNT_FIXED_TERM == accountTypeId) {
 			if (dayAllowed == null || !(dayAllowed >= 0 && dayAllowed <= 31)) {
@@ -254,64 +255,53 @@ public class BankAccountServiceImpl implements BankAccountService {
 	}
 
 	private Mono<Void> checkIfCreditCardIsRequired(BankAccount bankAccount) {
-		Integer accountTypeId = bankAccount.getTypeId();
+		Integer accountTypeId = bankAccount.getBankAccountType().getId();
 		return this.customerProxy.findById(bankAccount.getCustomer().getId())
-				.flatMap(customer -> {
-					boolean isVip = accountTypeId == Constants.ID_BANK_ACCOUNT_SAVING &&
-							customer.getCustomerTypeId() == Constants.CUSTOMER_TYPE_PERSONAL &&
-							customer.getCustomerProfileId() == Constants.CUSTOMER_PROFILE_VIP;
+			.flatMap(customer -> {
+				boolean isVip = 
+					accountTypeId == Constants.ID_BANK_ACCOUNT_SAVING &&
+					customer.getCustomerTypeId() == Constants.CUSTOMER_TYPE_PERSONAL &&
+					customer.getCustomerProfileId() == Constants.CUSTOMER_PROFILE_VIP;
 
-					boolean isPyme = accountTypeId == Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT &&
-							customer.getCustomerTypeId() == Constants.CUSTOMER_TYPE_BUSINESS &&
-							customer.getCustomerProfileId() == Constants.CUSTOMER_PROFILE_PYME;
+				boolean isPyme = 
+					accountTypeId == Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT &&
+					customer.getCustomerTypeId() == Constants.CUSTOMER_TYPE_BUSINESS &&
+					customer.getCustomerProfileId() == Constants.CUSTOMER_PROFILE_PYME;
 
-					if (isVip || isPyme) {
-							return creditProxy.findByDni(bankAccount.getCustomer().getDni())
-							.switchIfEmpty(Mono.error(new Exception(
-								"Se requiere que el cliente tenga al menos una tarjeta de crédito")))
-							.then();
-					}
+				if (isVip || isPyme) {
+					return creditProxy.findByDni(bankAccount.getCustomer().getDni())
+					.switchIfEmpty(Mono.error(new Exception(
+						"Se requiere que el cliente tenga al menos una tarjeta de crédito")))
+					.then();
+				}
 
-					return Mono.empty();
-				});
+				return Mono.empty();
+			});
 	}
 
 	private Mono<Void> checkBusinessRuleForCustomerAndAccount(String customerId, Integer accountTypeId) {
 		return this.customerProxy.findById(customerId)
-				.flatMap(customer -> {
-					if (Constants.CUSTOMER_TYPE_PERSONAL == customer.getCustomerTypeId()) {
-						return this.findAllByCustomerIdAndAccountId(customerId, accountTypeId)
-								.flatMap(result -> {
-									return Mono.error(
-											new Exception("El cliente " + result.getCustomer().getId() + " es de tipo " +
-													Constants.CUSTOMER_TYPE_PERSONAL_DESCRIPTION +
-													" y ya tiene registrado una cuenta de tipo " +
-													Util.typeOfAccount(result.getTypeId())));
-								})
-								.then();
-					} else if (Constants.CUSTOMER_TYPE_BUSINESS == customer.getCustomerTypeId() &&
-							(accountTypeId == Constants.ID_BANK_ACCOUNT_SAVING ||
-									accountTypeId == Constants.ID_BANK_ACCOUNT_FIXED_TERM)) {
-						return Mono.error(
-								new Exception("El cliente " + customerId + " es de tipo " +
-										Constants.CUSTOMER_TYPE_BUSINESS_DESCRIPTION +
-										" y no puede registrar una cuenta de tipo " +
-										Util.typeOfAccount(accountTypeId)));
-					} else {
-						return Mono.empty();
-					}
-				});
+			.flatMap(customer -> {
+				if (Constants.CUSTOMER_TYPE_PERSONAL == customer.getCustomerTypeId()) {
+					return this.findAllByCustomerIdAndAccountId(customerId, accountTypeId)
+					.flatMap(result -> {
+						return Mono.error(new Exception("El cliente " + result.getCustomer().getId() + 
+								" es de tipo " + Constants.CUSTOMER_TYPE_PERSONAL_DESCRIPTION + 
+								" y ya tiene registrado una cuenta de tipo " +
+								Util.typeOfAccount(result.getBankAccountType().getId())));
+					})
+					.then();
+				} else if (Constants.CUSTOMER_TYPE_BUSINESS == customer.getCustomerTypeId() &&
+					(accountTypeId == Constants.ID_BANK_ACCOUNT_SAVING ||
+					accountTypeId == Constants.ID_BANK_ACCOUNT_FIXED_TERM)) {
+					return Mono.error(
+						new Exception("El cliente " + customerId + " es de tipo " +
+							Constants.CUSTOMER_TYPE_BUSINESS_DESCRIPTION + 
+							" y no puede registrar una cuenta de tipo " +
+							Util.typeOfAccount(accountTypeId)));
+				} else {
+					return Mono.empty();
+				}
+			});
 	}
-
-//	@Override
-//	public Mono<BankAccountDetailResponseDto> getDetailByAccountNumber(String accountNumber) {
-//		return findByAccountNumber(accountNumber)
-//				.map(account -> {
-//					BankAccountDetailResponseDto response = new BankAccountDetailResponseDto();
-//					BankAccountType
-//					response.setId(account.getId());
-//					
-//					return response;
-//				});
-//	}
 }

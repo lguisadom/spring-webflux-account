@@ -17,4 +17,10 @@ public class Util {
         }
         return description;
     }
+    
+    public static boolean isValidAccountTypeId(Integer accountTypeId) {
+    	return accountTypeId == Constants.ID_BANK_ACCOUNT_SAVING ||
+				accountTypeId == Constants.ID_BANK_ACCOUNT_CURRENT_ACCOUNT ||
+				accountTypeId == Constants.ID_BANK_ACCOUNT_FIXED_TERM;
+    }
 }
