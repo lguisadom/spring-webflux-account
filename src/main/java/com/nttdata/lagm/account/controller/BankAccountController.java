@@ -1,6 +1,5 @@
 package com.nttdata.lagm.account.controller;
 
-import com.nttdata.lagm.account.dto.request.BankAccountRequestDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nttdata.lagm.account.dto.request.BankAccountRequestDto;
 import com.nttdata.lagm.account.dto.response.AvailableBalanceResponseDto;
 import com.nttdata.lagm.account.model.BankAccount;
 import com.nttdata.lagm.account.service.BankAccountService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import javax.ws.rs.Path;
 
 @RestController
 @RequestMapping(path = "/api/v1/account")
