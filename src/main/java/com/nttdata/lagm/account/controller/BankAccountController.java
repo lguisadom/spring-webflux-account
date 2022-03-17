@@ -23,6 +23,8 @@ import com.nttdata.lagm.account.service.BankAccountService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.ws.rs.Path;
+
 @RestController
 @RequestMapping(path = "/api/v1/account")
 public class BankAccountController {
@@ -35,7 +37,7 @@ public class BankAccountController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	private Mono<BankAccount> create(@RequestBody BankAccountRequestDto bankAccountRequestDto) {
-		LOGGER.info("Create: " + bankAccountRequestDto);
+		LOGGER.info("Create: bankAccountRequestDto=", bankAccountRequestDto);
 		return bankAccountService.create(bankAccountRequestDto);
 	}
 	
@@ -49,14 +51,14 @@ public class BankAccountController {
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	private Mono<BankAccount> findById(@PathVariable String id) {
-		LOGGER.info("findById: " + id);
+		LOGGER.info("findById: id={}", id);
 		return bankAccountService.findById(id);
 	}
 	
 	@PutMapping("/update/{id}/amount/{amount}")
 	@ResponseStatus(HttpStatus.OK)
 	private Mono<BankAccount> updateAmount(@PathVariable String id, @PathVariable String amount) {
-		LOGGER.info("UpdateAmount: " + id + ", amount: " + amount);
+		LOGGER.info("UpdateAmount: id={}, amount={}", id, amount);
 		return bankAccountService.updateAmount(id, amount);
 	}
 
@@ -71,14 +73,21 @@ public class BankAccountController {
 	@GetMapping("accountNumber/{accountNumber}")
 	@ResponseStatus(HttpStatus.OK)
 	private Mono<BankAccount> findByAccountNumber(@PathVariable String accountNumber) {
-		LOGGER.info("FindByAccountNumber: " + accountNumber);
+		LOGGER.info("FindByAccountNumber: accountNumber={}", accountNumber);
 		return bankAccountService.findByAccountNumber(accountNumber);
 	}
 	
 	@GetMapping("/balance/{accountNumber}")
 	@ResponseStatus(HttpStatus.OK)
 	private Mono<AvailableBalanceResponseDto> getAvailableBalance(@PathVariable("accountNumber") String accountNumber) {
-		LOGGER.info("GetAvailableBalance: " + accountNumber);
+		LOGGER.info("GetAvailableBalance: accountNumber={}", accountNumber);
 		return bankAccountService.getAvailableBalance(accountNumber);
+	}
+
+	@GetMapping(path = "/dni/{dni}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	private Flux<BankAccount> findAllByDni(@PathVariable("dni") String dni) {
+		LOGGER.info("FindAllByDni: dni={}", dni);
+		return bankAccountService.findAllByDni(dni);
 	}
 }

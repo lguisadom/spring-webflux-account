@@ -40,7 +40,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 	
 	@Override
 	public Mono<BankAccount> create(BankAccountRequestDto bankAccountRequestDto) {
-		BankAccount bankAccount = Converter.converToToBankAccount(bankAccountRequestDto);
+		BankAccount bankAccount = Converter.convertToBankAccount(bankAccountRequestDto);
 		return checkConditions(bankAccount)
 			.then(this.bankAccountRepository.save(bankAccount));
 	}
@@ -115,6 +115,14 @@ public class BankAccountServiceImpl implements BankAccountService {
 			.then(bankAccountRepository.findByAccountNumber(accountNumber).map(account -> {
 				return new AvailableBalanceResponseDto(account.getAccountNumber(), account.getAmount());
 			}));
+	}
+
+	@Override
+	public Flux<BankAccount> findAllByDni(String dni) {
+		return customerProxy.findByDni(dni)
+			.flatMapMany(customer -> {
+				return bankAccountRepository.findAll().filter(bankAccount -> bankAccount.getCustomer().getDni().equals(dni));
+			});
 	}
 
 	private Mono<Void> checkConditions(BankAccount bankAccount) {

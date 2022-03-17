@@ -111,7 +111,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"accountNumber\": \"19135813408062\",\r\n    \"cci\": \"00219113581340805851\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"622fbcda1560083515fe0171\",\r\n    \"typeId\": 2,\r\n    \"maintenanceFee\": 1\r\n}",
+							"raw": "{\r\n    \"accountNumber\": \"19135813408062\",\r\n    \"cci\": \"00219113581340805851\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"6233741fad65a6528795361f\",\r\n    \"typeId\": 2,\r\n    \"maintenanceFee\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -141,7 +141,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"accountNumber\": \"19135813408076\",\r\n    \"cci\": \"00219113581340805851\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"622fbcdd1560083515fe0173\",\r\n    \"typeId\": 2,\r\n    \"maintenanceFee\": 0\r\n}",
+							"raw": "{\r\n    \"accountNumber\": \"19135813408076\",\r\n    \"cci\": \"00219113581340805851\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"6233741ead65a6528795361e\",\r\n    \"typeId\": 2,\r\n    \"maintenanceFee\": 0\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -171,7 +171,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"accountNumber\": \"19135813408063\",\r\n    \"cci\": \"00219113581340805852\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"622fbcdb1560083515fe0172\",\r\n    \"typeId\": 3,\r\n    \"maintenanceFee\": 0,\r\n    \"maxLimitMonthlyMovements\": 1,\r\n    \"dayAllowed\": 31\r\n}",
+							"raw": "{\r\n    \"accountNumber\": \"19135813408063\",\r\n    \"cci\": \"00219113581340805852\",\r\n    \"amount\": 0,\r\n    \"customerId\": \"6233741fad65a6528795361f\",\r\n    \"typeId\": 3,\r\n    \"maintenanceFee\": 0,\r\n    \"maxLimitMonthlyMovements\": 1,\r\n    \"dayAllowed\": 31\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -268,6 +268,29 @@
 								"account",
 								"balance",
 								"19135813408053"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findAllByDni",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/api/v1/account/dni/12345678",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"v1",
+								"account",
+								"dni",
+								"12345678"
 							]
 						}
 					},

@@ -7,7 +7,7 @@ import com.nttdata.lagm.account.model.BankAccountType;
 import com.nttdata.lagm.account.model.Customer;
 
 public class Converter {
-	public static BankAccount converToToBankAccount(BankAccountRequestDto bankAccountRequestDto) {
+	public static BankAccount convertToBankAccount(BankAccountRequestDto bankAccountRequestDto) {
 		BankAccount bankAccount = new BankAccount();
 		bankAccount.setAccountNumber(bankAccountRequestDto.getAccountNumber());
 		bankAccount.setCci(bankAccountRequestDto.getCci());
