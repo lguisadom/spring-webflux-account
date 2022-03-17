@@ -88,4 +88,12 @@ public class BankAccountController {
 		LOGGER.info("FindAllByDni: dni={}", dni);
 		return bankAccountService.findAllByDni(dni);
 	}
+
+	@GetMapping(path = "/accountNumber/{accountNumber}/dni/{dni}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	private Flux<BankAccount> findAllByAccountNumberAndDni(
+			@PathVariable("accountNumber") String accountNumber, @PathVariable("dni") String dni) {
+		LOGGER.info("findAllByAccountNumberAndDni: accountNumber={}, dni={}", accountNumber, dni);
+		return bankAccountService.findAllByAccountNumberAndDni(accountNumber, dni);
+	}
 }

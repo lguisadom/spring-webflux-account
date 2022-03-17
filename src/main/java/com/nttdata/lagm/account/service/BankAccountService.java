@@ -19,5 +19,6 @@ public interface BankAccountService {
 	public Mono<BankAccount> updateAmount(String id, String amount);
 	public Mono<AvailableBalanceResponseDto> getAvailableBalance(String accountNumber);
 	public Flux<BankAccount> findAllByDni(String dni);
+	public Flux<BankAccount> findAllByAccountNumberAndDni(String accountNumber, String dni);
 //	public Mono<BankAccountDetailResponseDto> getDetailByAccountNumber(String accountNumber);
 }

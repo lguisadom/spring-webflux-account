@@ -121,7 +121,18 @@ public class BankAccountServiceImpl implements BankAccountService {
 	public Flux<BankAccount> findAllByDni(String dni) {
 		return customerProxy.findByDni(dni)
 			.flatMapMany(customer -> {
-				return bankAccountRepository.findAll().filter(bankAccount -> bankAccount.getCustomer().getDni().equals(dni));
+				return bankAccountRepository.findAll().filter(bankAccount ->
+					bankAccount.getCustomer().getDni().equals(dni));
+			});
+	}
+
+	@Override
+	public Flux<BankAccount> findAllByAccountNumberAndDni(String accountNumber, String dni) {
+		return customerProxy.findByDni(dni)
+			.flatMapMany(customer -> {
+				return bankAccountRepository.findAll().filter(bankAccount ->
+					bankAccount.getAccountNumber().equals(accountNumber) &&
+					bankAccount.getCustomer().getDni().equals(dni));
 			});
 	}
 
