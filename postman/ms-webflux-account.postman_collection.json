@@ -57,7 +57,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8083/api/v1/account/accountNumber/19135813408051",
+							"raw": "http://localhost:8083/api/v1/account/accountNumber/19135813408051/dni/46687138",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -68,7 +68,9 @@
 								"v1",
 								"account",
 								"accountNumber",
-								"19135813408051"
+								"19135813408051",
+								"dni",
+								"46687138"
 							]
 						}
 					},
@@ -295,6 +297,31 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "findAllByAccountNumberAndDni",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/api/v1/account/accountNumber/19135813408156/dni/12345678",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"v1",
+								"account",
+								"accountNumber",
+								"19135813408156",
+								"dni",
+								"12345678"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -389,7 +416,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 3,\r\n    \"description\": \"Cuenta de Ahorro\"\r\n}",
+							"raw": "{\r\n    \"id\": 3,\r\n    \"description\": \"Cuenta a plazo fijo\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
