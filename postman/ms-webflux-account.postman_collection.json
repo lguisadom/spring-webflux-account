@@ -57,7 +57,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8083/api/v1/account/accountNumber/19135813408051/dni/46687138",
+							"raw": "http://localhost:8083/api/v1/account/accountNumber/19135813408062",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -68,9 +68,7 @@
 								"v1",
 								"account",
 								"accountNumber",
-								"19135813408051",
-								"dni",
-								"46687138"
+								"19135813408062"
 							]
 						}
 					},
